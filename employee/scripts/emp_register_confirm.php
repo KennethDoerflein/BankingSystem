@@ -1,156 +1,132 @@
-<?php 
-    //includes file with db connection
-    require_once '../../db_connect.php';
-    
-    //gets session info
-    session_start();
-    
-    //takes input passed from form and assigns to variables
-    $user = strtolower(trim($_POST['user']));
-    $pass = trim($_POST['pass']);
-    $conpass = trim($_POST['conpass']);
-    $email = trim($_POST['email']);
-    $fname = trim($_POST['fname']);
-	$lname = trim($_POST['lname']);
-	$stadd = trim($_POST['stadd']);
-	$city = trim($_POST['city']);
-	$state = trim($_POST['state']);
-	$zip = trim($_POST['zip']);
-	
-	//checks if all inputs have been passed
-	if (!$user || !$pass || !$conpass || !$fname || !$lname || !$email || !$stadd || !$city || !$state || !$zip) {
-	    $_SESSION['registration_failed'] = 'invalid_input';
-	    header('Location: ../emp_register.php');
-	    
-	    //closes db conection
-	    $db->close();
-	    exit();
-	}
-	
-	//checks if password is at least 6 characters
-	else if (strlen($pass) < 6) {
-	    $_SESSION['registration_failed'] = 'invalid_password';
-	    header('Location: ../emp_register.php');
-	    echo "<p style:\"color:red;\">Password too short, try again!<p>";
-	    //closes db conection
-	    $db->close();
-	    exit();
-	}
-	
-	//checks if password and confirm password inputs match
-	else if ($pass != $conpass) {
-	    $_SESSION['registration_failed'] = 'pwdnotmatch';
-	    header('Location: ../emp_register.php');
-	    
-	    //closes db conection
-	    $db->close();
-	    exit();
-	}
-	
-    //gets id and username from current employee
-    $query = 'SELECT employeeID, eUsername, eEmail FROM EMPLOYEE';
-	$results = $db->query($query);
-	
-	$queryCust = 'SELECT username FROM CUSTOMER';
-	$resultsCust = $db->query($queryCust);
-	
-	//gets the number of results
-	$num_results = $results->num_rows;
-	$num_resultsCUST = $resultsCust->num_rows;
-    
-    for ($i = 0; $i < $num_resultsCUST; $i++) {
-        $rowCust = $resultsCust->fetch_assoc();
-        
-        //compares current usernames with new username    
-        if ($user == $rowCust['username']) {
-            //exits program is there is a match
-            $_SESSION['registration_failed'] = 'usertaken';
-            header('Location: ../emp_register.php');
-            
-            //closes db conection
-            $results->free();
-	        $db->close();
-            exit();
-        }
-    }
-    
-    
-    //generates a 6 digit random number for employee id
-    $empid = mt_rand(100000, 999999);
-	
-	//adds slashes for any quotes in inputs
-	if (!get_magic_quotes_gpc()) {
-        $user = addslashes($user);
-        $pass = addslashes($pass);
-        $fname = addslashes($fname);
-        $lname = addslashes($lname);
-        $email = addslashes($email);
-        $city = addslashes($city);
-	}
-	
-	//concatenates address
-	$address = $stadd.' '.$city.', '.$state.' '.$zip;
-	
-	//hashes password
-	$pass = password_hash($pass, PASSWORD_DEFAULT);
-  
-    //loops through all current customers
-    for ($i = 0; $i < $num_results; $i++) {
-        $row = $results->fetch_assoc();
-        
-        //compares current ids with new ids
-        if ($empid == $row['customerID'])
-            //creates a new random id if there is a match
-            $empid = mt_rand(100000, 999999);
-        
-        //compares current usernames with new username    
-        if ($user == $row['eUsername']) {
-            //exits program is there is a match
-            $_SESSION['registration_failed'] = 'usertaken';
-            header('Location: ../emp_register.php');
-            
-            //closes db conection
-            $results->free();
-	        $db->close();
-            exit();
-        }
-        
-        if ($email == $row['email']) {
-            //exits program is there is a match
-            $_SESSION['registration_failed'] = 'emailtaken';
-            header('Location: ../emp_register.php');
-            
-            //closes db conection
-            $results->free();
-	        $db->close();
-            exit();
-        }
-    }
-    
-    //converts customer id into string
-    $empid = strval($empid);
-	
-	//creates insert query for db with user info
-	$query = "INSERT INTO EMPLOYEE VALUES 
-	('".$empid."', '".$user."', '".$pass."', '".$email."', '".$fname."', '".$lname."', '".$address."')";
-	
-	//tries to insert user info into db
-	$results = $db->query($query);
-	
-	//checks if insert was successful
-	if ($results) {
-	    $_SESSION['regdone'] = true;
-	    header('Location: ../emp_login.php');
-	    exit();
-	}
-	
-	//checks if some other error has occurred
-	else {
-	    $_SESSION['registration_failed'] = 'randerr';
-	    header('Location: ../emp_register.php');
-	    exit();
-	}
-	
-	//closes db connection
+<?php
+//includes file with db connection
+require_once '../../db_connect.php';
+
+//gets session info
+session_start();
+
+//takes input passed from form and assigns to variables
+$user = strtolower(trim($_POST['user']));
+$pass = trim($_POST['pass']);
+$conpass = trim($_POST['conpass']);
+$email = trim($_POST['email']);
+$fname = trim($_POST['fname']);
+$lname = trim($_POST['lname']);
+$stadd = trim($_POST['stadd']);
+$city = trim($_POST['city']);
+$state = trim($_POST['state']);
+$zip = trim($_POST['zip']);
+
+//checks if all inputs have been passed
+if (!$user || !$pass || !$conpass || !$fname || !$lname || !$email || !$stadd || !$city || !$state || !$zip) {
+    $_SESSION['registration_failed'] = 'invalid_input';
+    header('Location: ../emp_register.php');
     $db->close();
-?>
+    exit();
+}
+
+//checks if password is at least 6 characters
+if (strlen($pass) < 6) {
+    $_SESSION['registration_failed'] = 'invalid_password';
+    header('Location: ../emp_register.php');
+    $db->close();
+    exit();
+}
+
+//checks if password and confirm password inputs match
+if ($pass != $conpass) {
+    $_SESSION['registration_failed'] = 'pwdnotmatch';
+    header('Location: ../emp_register.php');
+    $db->close();
+    exit();
+}
+
+// Begin transaction
+$db->begin_transaction();
+
+try {
+  // Check if username exists in employee table
+  $stmt = $db->prepare("SELECT eUsername FROM employee WHERE eUsername = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $_SESSION['registration_failed'] = 'usertaken';
+        header('Location: ../emp_register.php');
+        $stmt->close();
+        $db->close();
+        exit();
+    }
+    $stmt->close();
+
+  // Check if username exists in customer table
+  $stmt = $db->prepare("SELECT cUsername FROM customer WHERE cUsername = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $_SESSION['registration_failed'] = 'usertaken';
+        header('Location: ../emp_register.php');
+        $stmt->close();
+        $db->close();
+        exit();
+    }
+    $stmt->close();
+
+  // Check if email exists
+  $stmt = $db->prepare("SELECT eEmail FROM employee WHERE eEmail = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $_SESSION['registration_failed'] = 'emailtaken';
+        header('Location: ../emp_register.php');
+        $stmt->close();
+        $db->close();
+        exit();
+    }
+    $stmt->close();
+
+  // Generate unique employee ID
+  $empid = mt_rand(100000, 999999);
+  $stmt = $db->prepare("SELECT employeeID FROM employee WHERE employeeID = ?");
+    do {
+        $stmt->bind_param("s", $empid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $empid = mt_rand(100000, 999999);
+        }
+    } while ($result->num_rows > 0);
+    $stmt->close();
+
+    // Concatenate address
+    $address = $stadd . ' ' . $city . ', ' . $state . ' ' . $zip;
+
+    // Hash password
+    $hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
+
+  // Insert new employee (7 columns only)
+  $stmt = $db->prepare("INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?)");
+  $stmt->bind_param("sssssss", $empid, $user, $hashedPassword, $email, $fname, $lname, $address);
+    $stmt->execute();
+
+    // If successful, commit and redirect
+    $db->commit();
+    $_SESSION['regdone'] = true;
+    header('Location: ../emp_login.php');
+
+} catch (Exception $e) {
+    // If any error occurs, rollback the transaction
+    $db->rollback();
+    error_log("Employee registration failed: " . $e->getMessage());
+    $_SESSION['registration_failed'] = 'randerr';
+    header('Location: ../emp_register.php');
+} finally {
+    if (isset($stmt)) $stmt->close();
+    $db->close();
+    exit();
+}

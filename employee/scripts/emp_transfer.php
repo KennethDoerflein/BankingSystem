@@ -1,158 +1,162 @@
-<?php 
-    //includes file with db connection
-    require_once '../../db_connect.php';
-    
-    //gets session info
-    session_start();
-    
-    if(isset($_SESSION["loggedin"])){
-            if(time()-$_SESSION["login_time_stamp"] >600){
-                session_unset();
-                session_destroy();
-                header("Location: login.php");
-            }
-        }
-    
-    $transfer = trim($_POST['transfer']);
-    $senderAcctNum = intval(trim($_POST['sender_account_num']));
-    $receiverAcctNum = trim($_POST['receiver_account_num']);
-    $transferType = trim($_POST['transferType']);
-    date_default_timezone_set("America/New_York");
-    $sDate = date("Y/m/d H:i:s");
-    $rDate = date("Y/m/d H:i:s");
-    $rTransactionType = "transfer received";
-    $sTransactionType = "transfer sent";
-    
-    $query = 'SELECT transactionID FROM TRANSACTIONS';
-	$results = $db->query($query);
-	$senderTransactionid = mt_rand(10000000000, 20000000000);
-	$receiverTransactionid = mt_rand(10000000000, 20000000000);
-	
-	for ($i = 0; $i < $num_results; $i++) {
-        $row = $results->fetch_assoc();
-        if ($senderTransactionid == $row['transactionID']){
-            $senderTransactionid = mt_rand(10000000000, 20000000000);
-            $i=0;
-        }
-        if ($receiverTransactionid == $row['transactionID']){
-            $receiverTransactionid = mt_rand(10000000000, 20000000000);
-            $i=0;
-        }
-	}
-    
-    
-    if (!$transfer || !$senderAcctNum || !$receiverAcctNum || !$transferType){
-	    $_SESSION['transfer_failed'] = 'invalid_input';
-	    header('Location: ../addTransaction.php');
-	    //closes db conection
-	    $db->close();
-	    exit();
-	}
-		
-	//adds slashes for any quotes in inputs
-	if (!get_magic_quotes_gpc()) {
-        $transfer = addslashes($transfer);
-        $senderAcctNum = addslashes($senderAcctNum);
-        if ($transferType == "internal"){
-            $receiverAcctNum = addslashes($receiverAcctNum);
-        }
-	}
-	
-	
-	
-	$query = "SELECT * FROM ACCOUNTS WHERE bankAccountNumber = '$senderAcctNum'";
-	$results = $db->query($query);
-	$row = $results->fetch_assoc();
-	if (!$row){
-	   $_SESSION['transaction_failed'] = 'doesntOwnAcct';
-	   header('Location: ../addTransaction.php');
-	   exit();
-	}
-	$senderCurrentBalance = $row['balance'];
-	$senderOwnerID = $row['ownerID'];
-	$numTransactions = $row['numOfTransactions'];
-	$numTransactions = $numTransactions + 1;
-	$results->free();
-	
-	if ($transferType == "internal"){
-    	$query = "SELECT * FROM ACCOUNTS WHERE bankAccountNumber = '$receiverAcctNum'";
-    	$results = $db->query($query);
-    	$row = $results->fetch_assoc();
-    	if (!$row){
-    	   $_SESSION['transaction_failed'] = 'doesntOwnAcct';
-    	   header('Location: ../addTransaction.php');
-    	   exit();
-    	}
-    	$receiverCurrentBalance = $row['balance'];
-    	$receiverOwnerID = $row['ownerID'];
-    	$recNumTransactions = $row['numOfTransactions'];
-    	$recNumTransactions = $recNumTransactions + 1;
-    	$results->free();
-	}
-	
+<?php
+//includes file with db connection
+require_once '../../db_connect.php';
 
-	
-	if ($senderCurrentBalance >= $transfer){
-        $senderNewBalance = round((doubleval($senderCurrentBalance) - (doubleval($transfer))*1.03),2);
-        $senderNewBalance = round($senderNewBalance,2);
-        if ($transferType == "internal"){
-            $receiverNewBalance = round(doubleval($receiverCurrentBalance) + doubleval($transfer),2);
-            $receiverNewBalance = round($receiverNewBalance,2);
-	
-        }
-    }
-	
-	else{
-	 $_SESSION['transaction_failed'] = 'insufficentBalance';
-	   header('Location: ../addTransaction.php');
-	   exit();
-	}
-	
-	
+//gets session info
+session_start();
 
-	
-	if ($transferType == "internal"){
-    	$sql = "UPDATE ACCOUNTS SET balance='$receiverNewBalance' WHERE bankAccountNumber='$receiverAcctNum'";
-    	$receiverResults = $db->query($sql);
-	}
-	$sql = "UPDATE ACCOUNTS SET balance='$senderNewBalance' WHERE bankAccountNumber='$senderAcctNum'";
-	$senderResults = $db->query($sql);
-	$rtransfer = $transfer + 0;
-	$stransfer = round((-$transfer*1.03 + 0),2);
-    if (($receiverResults || $transferType == "external") && $senderResults) {
-        
-        $query2 = "INSERT INTO TRANSACTIONS VALUES
-	    ('".$sDate."', '".$sTransactionType."', '".$stransfer."', '".$senderAcctNum."', '".$senderTransactionid."')";
-	
-	    //tries to insert user info into db
-	    $transactionResults = $db->query($query2);
-	    
-	    
-	    if ($transferType == "internal"){
-    	    $query3 = "INSERT INTO TRANSACTIONS VALUES
-    	    ('".$rDate."', '".$rTransactionType."', '".$rtransfer."', '".$receiverAcctNum."', '".$receiverTransactionid."')";
-    	
-    	    //tries to insert user info into db
-    	    $senderTransferResults = $db->query($query3);
-	    }
-	    $sql = "UPDATE ACCOUNTS SET numOfTransactions='$numTransactions' WHERE bankAccountNumber='$senderAcctNum'";
-	    $results2 = $db->query($sql);
-	    if ($transferType == "internal"){
-    	    $sql2 = "UPDATE ACCOUNTS SET numOfTransactions='$recNumTransactions' WHERE bankAccountNumber='$receiverAcctNum'";
-    	    $results3 = $db->query($sql2);
-	    }
-	    
-        
-	    $_SESSION['transferSuccess'] = 'successful';
-	    header('Location: ../addTransaction.php');
-	    exit();
-	}
-	else {
-	    $_SESSION['registration_failed'] = 'randerr';
-	    header('Location: ../addTransaction.php');
-	    exit();
-	}
-	
-    //closes db connection
+if (isset($_SESSION["loggedin"])) {
+  if (time() - $_SESSION["login_time_stamp"] > 600) {
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+  }
+}
+
+$transfer = trim($_POST['transfer']);
+$senderAcctNum = intval(trim($_POST['sender_account_num']));
+$receiverAcctNum = trim($_POST['receiver_account_num']);
+$transferType = trim($_POST['transferType']);
+date_default_timezone_set("America/New_York");
+$sDate = date("Y/m/d H:i:s");
+$rDate = date("Y/m/d H:i:s");
+$rTransactionType = "transfer received";
+$sTransactionType = "transfer sent";
+
+// Generate unique transaction IDs
+$senderTransactionid = mt_rand(10000000000, 20000000000);
+$receiverTransactionid = mt_rand(10000000000, 20000000000);
+
+// Verify transaction IDs are unique
+$stmt = $db->prepare("SELECT transactionID FROM transactions WHERE transactionID = ? OR transactionID = ?");
+do {
+  $stmt->bind_param("ss", $senderTransactionid, $receiverTransactionid);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  if ($result->num_rows > 0) {
+    $senderTransactionid = mt_rand(10000000000, 20000000000);
+    $receiverTransactionid = mt_rand(10000000000, 20000000000);
+  }
+} while ($result->num_rows > 0);
+$stmt->close();
+
+// Get sender account details
+$stmt = $db->prepare("SELECT balance, ownerID, numOfTransactions FROM accounts WHERE bankAccountNumber = ?");
+$stmt->bind_param("s", $senderAcctNum);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if (!$result->num_rows) {
+  $_SESSION['transaction_failed'] = 'doesntOwnAcct';
+  header('Location: ../addTransaction.php');
+  $stmt->close();
+  $db->close();
+  exit();
+}
+
+$row = $result->fetch_assoc();
+$senderCurrentBalance = $row['balance'];
+$senderOwnerID = $row['ownerID'];
+$numTransactions = $row['numOfTransactions'] + 1;
+$stmt->close();
+
+// For internal transfers, get receiver account details
+if ($transferType == "internal") {
+  $stmt = $db->prepare("SELECT balance, ownerID, numOfTransactions FROM accounts WHERE bankAccountNumber = ?");
+  $stmt->bind_param("s", $receiverAcctNum);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if (!$result->num_rows) {
+    $_SESSION['transaction_failed'] = 'doesntOwnAcct';
+    header('Location: ../addTransaction.php');
+    $stmt->close();
     $db->close();
-?>
+    exit();
+  }
+
+  $row = $result->fetch_assoc();
+  $receiverCurrentBalance = $row['balance'];
+  $receiverOwnerID = $row['ownerID'];
+  $recNumTransactions = $row['numOfTransactions'] + 1;
+  $stmt->close();
+}
+
+// Check sufficient balance
+if ($senderCurrentBalance < $transfer) {
+  $_SESSION['transaction_failed'] = 'insufficentBalance';
+  header('Location: ../addTransaction.php');
+  $db->close();
+  exit();
+}
+
+// Calculate balances
+$senderNewBalance = round((doubleval($senderCurrentBalance) - (doubleval($transfer)) * 1.03), 2);
+$rtransfer = $transfer;
+$stransfer = round((-$transfer * 1.03), 2);
+
+if ($transferType == "internal") {
+  $receiverNewBalance = round(doubleval($receiverCurrentBalance) + doubleval($transfer), 2);
+}
+
+// Begin transaction
+$db->begin_transaction();
+
+try {
+  // Update sender balance
+  $stmt1 = $db->prepare("UPDATE accounts SET balance = ? WHERE bankAccountNumber = ?");
+  $stmt1->bind_param("ds", $senderNewBalance, $senderAcctNum);
+  $stmt1->execute();
+
+  // For internal transfers, update receiver balance
+  if ($transferType == "internal") {
+    $stmt2 = $db->prepare("UPDATE accounts SET balance = ? WHERE bankAccountNumber = ?");
+    $stmt2->bind_param("ds", $receiverNewBalance, $receiverAcctNum);
+    $stmt2->execute();
+  }
+
+  // Record sender's transaction
+  $stmt3 = $db->prepare("INSERT INTO transactions VALUES (?, ?, ?, ?, ?)");
+  $stmt3->bind_param("ssdss", $sDate, $sTransactionType, $stransfer, $senderAcctNum, $senderTransactionid);
+  $stmt3->execute();
+
+  // For internal transfers, record receiver's transaction
+  if ($transferType == "internal") {
+    $stmt4 = $db->prepare("INSERT INTO transactions VALUES (?, ?, ?, ?, ?)");
+    $stmt4->bind_param("ssdss", $rDate, $rTransactionType, $rtransfer, $receiverAcctNum, $receiverTransactionid);
+    $stmt4->execute();
+  }
+
+  // Update sender's transaction count
+  $stmt5 = $db->prepare("UPDATE accounts SET numOfTransactions = ? WHERE bankAccountNumber = ?");
+  $stmt5->bind_param("is", $numTransactions, $senderAcctNum);
+  $stmt5->execute();
+
+  // For internal transfers, update receiver's transaction count
+  if ($transferType == "internal") {
+    $stmt6 = $db->prepare("UPDATE accounts SET numOfTransactions = ? WHERE bankAccountNumber = ?");
+    $stmt6->bind_param("is", $recNumTransactions, $receiverAcctNum);
+    $stmt6->execute();
+  }
+
+  // If all queries succeed, commit the transaction
+  $db->commit();
+
+  $_SESSION['transferSuccess'] = 'successful';
+  header('Location: ../addTransaction.php');
+} catch (Exception $e) {
+  // If any query fails, roll back the transaction
+  $db->rollback();
+  $_SESSION['registration_failed'] = 'randerr';
+  header('Location: ../addTransaction.php');
+} finally {
+  // Close all prepared statements
+  if (isset($stmt1)) $stmt1->close();
+  if (isset($stmt2)) $stmt2->close();
+  if (isset($stmt3)) $stmt3->close();
+  if (isset($stmt4)) $stmt4->close();
+  if (isset($stmt5)) $stmt5->close();
+  if (isset($stmt6)) $stmt6->close();
+  $db->close();
+  exit();
+}

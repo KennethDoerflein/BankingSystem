@@ -4,135 +4,135 @@
 
 @media only screen and (max-width: 600px) {
   ul {
-      font-size: 8px; 
+    font-size: 8px;
   }
-  
-  .section-wrapper{
-      font-size:12px;
+
+  .section-wrapper {
+    font-size: 12px;
   }
-  
-  .mkjj-button{
-      background-color: blue;
-      padding-top: 16px;
+
+  .mkjj-button {
+    background-color: blue;
+    padding-top: 16px;
   }
-  
-  .info{
-      text-align: left;
+
+  .info {
+    text-align: left;
   }
-  
 }
 
 /*css for homepage*/
 /*body and html*/
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 /* Black Bar*/
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: black;
-    font-size: 16px;    
-  }
-  
-  li {
-    float: left;
-  }
-  
-  li a {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    padding: 14px 14px;
-    text-decoration: none;
-  }
-  
-  li a:hover {
-    background-color: grey;
-  }
-  
-  li a.admin_home {
-      background-color:blue;
-  }
-  
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+  font-size: 16px;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 14px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: grey;
+}
+
+li a.admin_home {
+  background-color: blue;
+}
+
 /*Grey header*/
-  .hero-text {
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-  }
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
 
-  .hero-text button {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 10px 25px;
-    color: black;
-    background-color: #ddd;
-    text-align: center;
-    cursor: pointer;
-  }
+.hero-text button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 25px;
+  color: black;
+  background-color: #ddd;
+  text-align: center;
+  cursor: pointer;
+}
 
-  .hero-text button:hover {
-    background-color: #555;
-    color: white;
-  }
-  
-  .services-content {
-    text-align: center;
-  }
-  
-  .services-list {
-    display: flex;
-    /*display: inline-block;*/
-    flex-direction: column;
-    list-style-type: disc;
-    list-style-position: inside;
-    background-color: unset;
-    padding: 0 0 0 5vw;
-  }
-  
-  .services-align{
-    width:403px;
-    margin:0;
-    text-align: left;
-    display: inline-block; 
-    position: relative;
-    
-    /*top: 51%;*/
-    /*left: 50%;*/
-    /*transform: translate(205%, -0%);*/
-  }
-  
-  .servies-li{
-      font-size: 13px;
-  }
+.hero-text button:hover {
+  background-color: #555;
+  color: white;
+}
 
-  .hero-wrapper{
-    padding: 8rem;
-    background-color: grey;      
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    color:white;
-    font-size:24px;
-    padding-bottom: 20px;
-    padding-top: 20px;
-  }
-  
-  .hero-wrapper-squared{
-    display:block;
-  }
+.services-content {
+  text-align: center;
+}
 
-.mkjj-button{
+.services-list {
+  display: flex;
+  /*display: inline-block;*/
+  flex-direction: column;
+  list-style-type: disc;
+  list-style-position: inside;
+  background-color: unset;
+  padding: 0 0 0 5vw;
+}
+
+.services-align {
+  width: 403px;
+  margin: 0;
+  text-align: left;
+  display: inline-block;
+  position: relative;
+
+  /*top: 51%;*/
+  /*left: 50%;*/
+  /*transform: translate(205%, -0%);*/
+}
+
+.servies-li {
+  font-size: 13px;
+}
+
+.hero-wrapper {
+  padding: 8rem;
+  background-color: grey;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.hero-wrapper-squared {
+  display: block;
+}
+
+.mkjj-button {
   background-color: black;
   border: none;
   color: white;
@@ -141,78 +141,78 @@ ul {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  border-radius:12px;
+  border-radius: 12px;
   margin-right: 5px;
 }
-.mkjj-button:hover{
+.mkjj-button:hover {
   cursor: pointer;
 }
 
-.section-wrapper{
-    padding:16px;
-    margin: auto;
-    width: 50%;
-    /*border: 3px solid grey;*/
-    text-align:center;
-    border-radius:12px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+.section-wrapper {
+  padding: 16px;
+  margin: auto;
+  width: 50%;
+  /*border: 3px solid grey;*/
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.account-card{
-    padding:16px;
-    margin: auto;
-    text-align: center;
-    border-radius:12px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-evenly;
+.account-card {
+  padding: 16px;
+  margin: auto;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.history-card{
-    padding:16px;
-    margin: auto;
-    text-align: center;
-    border-radius:12px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-evenly;
+.history-card {
+  padding: 16px;
+  margin: auto;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.account-card:hover{
-    background: LightSkyBlue;
+.account-card:hover {
+  background: LightSkyBlue;
 }
 
 .vl {
-    border-left: 2px solid black;
-    height: auto;
+  border-left: 2px solid black;
+  height: auto;
 }
 
 .card-info {
-    width: 33%;
-    padding: 0 2vw;
+  width: 33%;
+  padding: 0 2vw;
 }
 /*delete below lines, unneeded for this project*/
 
 /*
 CARD CSS BELOW
 */
-  
-   /*Float four columns side by side */
+
+/*Float four columns side by side */
 .column {
   float: left;
   width: 33%;
-  padding:1rem;
+  padding: 1rem;
 }
 
- /*Remove extra left and right margins, due to padding */
+/*Remove extra left and right margins, due to padding */
 .row {
-    margin: 1rem;
-    display:flex;
+  margin: 1rem;
+  display: flex;
 }
 
- /*Clear floats after the columns */
+/*Clear floats after the columns */
 .row:after {
   content: "";
   display: table;
@@ -220,35 +220,33 @@ CARD CSS BELOW
 }
 
 .index-img {
-    width:100%;
-    height:55vh;
+  width: 100%;
+  height: 55vh;
 }
 
- /*Responsive columns */
+/*Responsive columns */
 @media screen and (max-width: 1200px) {
-    .index-img {
-        height:45vh;
-    }
+  .index-img {
+    height: 45vh;
+  }
 }
- 
+
 @media screen and (max-width: 900px) {
-    .column {
-        width: 45%;
-    }
-    .index-img {
-        height:40vh;
-    }
-    .row {
-      flex-wrap:wrap;
-    }
-    
+  .column {
+    width: 45%;
+  }
+  .index-img {
+    height: 40vh;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
 }
 
 @media screen and (max-width: 700px) {
-    .column {
-        width: 44%;
-    }
-    
+  .column {
+    width: 44%;
+  }
 }
 
 @media screen and (max-width: 600px) {
@@ -259,17 +257,38 @@ CARD CSS BELOW
     padding: 0;
   }
   .row {
-      flex-direction:column;
+    flex-direction: column;
   }
   .index-img {
-      width: 100%;
+    width: 100%;
   }
 }
 
- /*Style the counter cards */
+/*Style the counter cards */
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   padding: 16px;
   text-align: center;
   background-color: #f1f1f1;
+}
+
+.alert {
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 1rem;
+  position: relative;
+  box-sizing: border-box;
+}
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
+.text-center {
+  text-align: center;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
 }

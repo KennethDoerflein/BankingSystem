@@ -1,32 +1,38 @@
 <?php
-    //includes file with db connection
-    require_once '../../db_connect.php';
-    
-    //gets session info
-    session_start();
-    
-    $bankAccountNum = trim($_POST['accept']);
+//includes file with db connection
+require_once '../../db_connect.php';
 
-    $query = "DELETE FROM ACCOUNTS WHERE bankAccountNumber='$bankAccountNum'";
-    $results = $db->query($query);
-    if ($results){
-        // $query = "DELETE FROM TRANSACTIONS WHERE bankAccountNumber='$bankAccountNum'";
-        // $results = $db->query($query);
-        
-    //     $sql = "UPDATE ACCOUNTS SET status='$status' WHERE ownerID='$cID' AND bankAccountNumber='$bankAccountNum'";
-	   // $results2 = $db->query($sql);
-	    
-	    $_SESSION['acctDeletionDone'] = 'done';
-	    header('Location: ../account_requests.php');
-	    exit();
-    }else{$_SESSION['registration_failed'] = 'randerr';
-	    header('Location: ../account_requests.php');
-	    $db->close();
-	    exit();
-    }
-	//closes db connection
-    $db->close();
-    
+//gets session info
+session_start();
 
+$bankAccountNum = trim($_POST['accept']);
 
-?>
+// Begin transaction
+$db->begin_transaction();
+
+try {
+  // Delete account
+  $stmt = $db->prepare("DELETE FROM accounts WHERE bankAccountNumber = ?");
+  $stmt->bind_param("s", $bankAccountNum);
+  $result = $stmt->execute();
+
+  if ($stmt->affected_rows > 0) {
+    // If account was found and deleted
+    $db->commit();
+    $_SESSION['acctDeletionDone'] = 'done';
+  } else {
+    // If account wasn't found
+    $db->rollback();
+    $_SESSION['registration_failed'] = 'randerr';
+  }
+} catch (Exception $e) {
+  // If any query fails, roll back the transaction
+  $db->rollback();
+  $_SESSION['registration_failed'] = 'randerr';
+} finally {
+  // Close prepared statement
+  if (isset($stmt)) $stmt->close();
+  $db->close();
+  header('Location: ../account_requests.php');
+  exit();
+}
