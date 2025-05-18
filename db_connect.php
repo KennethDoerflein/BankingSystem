@@ -1,6 +1,6 @@
 <?php
 //creates new database object
-@$db = new mysqli('localhost', 'mkjj_user', 'tjw9V0wpU_L41YxU', 'mkjj');
+@$db = new mysqli('localhost', 'mkjj_user', 'PASSWORD_PLACEHOLDER', 'mkjj');
 
 //checks connection to database
 if (mysqli_connect_errno()) {
